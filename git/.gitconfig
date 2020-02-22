@@ -1,0 +1,6 @@
+[user]
+	name = gilzoide
+	email = gilzoide@gmail.com
+[core]
+	excludesfile = ~/.gitignore_global
+	editor = vim
