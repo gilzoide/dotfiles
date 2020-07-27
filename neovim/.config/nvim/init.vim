@@ -1,9 +1,10 @@
 set mouse=a
 set number
 set relativenumber
+
 set expandtab
-set tabstop=4
-set shiftwidth=4
+set tabstop=2
+set shiftwidth=2
 
 let g:netrw_liststyle = 3
 let g:netrw_banner = 0
@@ -15,10 +16,14 @@ Plug 'preservim/nerdcommenter'
 Plug 'junegunn/fzf', { 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
 Plug 'cespare/vim-toml'
+Plug 'editorconfig/editorconfig-vim'
 call plug#end()
 
 nmap <F8> :Ex<CR>
 nmap <C-F8> :Vex<CR>
+
+" Don't use Ex mode, use Q for formatting
+map Q gq
 
 " FZF
 nmap <leader><tab> <plug>(fzf-maps-n)
