@@ -1,6 +1,7 @@
 set mouse=a
 set number
 set relativenumber
+set hidden
 
 set expandtab
 set tabstop=2
@@ -17,6 +18,7 @@ Plug 'junegunn/fzf', { 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
 Plug 'cespare/vim-toml'
 Plug 'editorconfig/editorconfig-vim'
+Plug 'Olical/vim-enmasse'
 call plug#end()
 
 nmap <F8> :Ex<CR>
@@ -36,6 +38,7 @@ imap <c-x><c-l> <plug>(fzf-complete-line)
 nmap <leader>f :Files<CR>
 nmap <leader>d :Tags<CR>
 nmap <leader>r :Rg 
+nmap <leader>b :ls<CR>:b
 
 " Rusty tags
 if executable("rusty-tags") == 1
