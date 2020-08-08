@@ -13,12 +13,14 @@ let g:netrw_winsize = 25
 
 call plug#begin()
 Plug 'tpope/vim-sensible'
+Plug 'tpope/vim-surround'
 Plug 'preservim/nerdcommenter'
 Plug 'junegunn/fzf', { 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
 Plug 'cespare/vim-toml'
 Plug 'editorconfig/editorconfig-vim'
 Plug 'Olical/vim-enmasse'
+Plug 'frazrepo/vim-rainbow'
 call plug#end()
 
 nmap <F8> :Ex<CR>
