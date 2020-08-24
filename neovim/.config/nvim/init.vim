@@ -14,6 +14,7 @@ let g:netrw_winsize = 25
 call plug#begin()
 Plug 'tpope/vim-sensible'
 Plug 'tpope/vim-surround'
+Plug 'tpope/vim-repeat'
 Plug 'preservim/nerdcommenter'
 Plug 'junegunn/fzf', { 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
@@ -21,6 +22,10 @@ Plug 'cespare/vim-toml'
 Plug 'editorconfig/editorconfig-vim'
 Plug 'Olical/vim-enmasse'
 Plug 'frazrepo/vim-rainbow'
+Plug 'igankevich/mesonic'
+Plug 'vim-scripts/argtextobj.vim'
+Plug 'vim-scripts/loremipsum'
+Plug 'michaeljsmith/vim-indent-object'
 call plug#end()
 
 nmap <F8> :Ex<CR>
@@ -47,3 +52,10 @@ if executable("rusty-tags") == 1
     autocmd BufRead *.rs :setlocal tags=./rusty-tags.vi;/
     autocmd BufWritePost *.rs :silent! exec "!rusty-tags vi --quiet --start-dir=" . expand('%:p:h') . "&" | redraw!
 endif
+
+" '@' on visual executes the same macro on each line
+xnoremap @ :<C-u>call ExecuteMacroOverVisualRange()<CR>
+function! ExecuteMacroOverVisualRange()
+  echo "@".getcmdline()
+  execute ":'<,'>normal @".nr2char(getchar())
+endfunction
