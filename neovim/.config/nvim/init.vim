@@ -30,6 +30,10 @@ call plug#end()
 
 nmap <F8> :Ex<CR>
 nmap <C-F8> :Vex<CR>
+xmap * "vy/\<<C-R>v\><CR>
+xmap g* "vy/<C-R>v<CR>
+xmap # "vy?\<<C-R>v\><CR>
+xmap g# "vy?<C-R>v<CR>
 
 " Don't use Ex mode, use Q for formatting
 map Q gq
