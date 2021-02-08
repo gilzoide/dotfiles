@@ -15,3 +15,5 @@
 	clean = git-lfs clean -- %f
 [advice]
 	detachedHead = false
+[init]
+	defaultBranch = main
