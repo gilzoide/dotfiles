@@ -109,7 +109,7 @@ autocmd User FloatPreviewWinOpen call FloatPreviewOnTop()
 lua << EOF
 local nvim_lsp = require 'nvim_lsp'
 nvim_lsp.clangd.setup{
-  cmd = { "clangd", "--background-index", "--compile-commands-dir=build" },
+  cmd = { "clangd", "--background-index", "--compile-commands-dir=build", "-j=8" },
 }
 nvim_lsp.omnisharp.setup{}
 nvim_lsp.pyls.setup{}
@@ -146,7 +146,36 @@ autocmd Filetype c,cpp,cs,d,rust setlocal omnifunc=v:lua.vim.lsp.omnifunc
 
 autocmd Filetype c,cpp nmap <leader>h :ClangdSwitchSourceHeader<CR>
 
+" Ref: https://vim.fandom.com/wiki/Different_syntax_highlighting_within_regions_of_a_file
+function! TextEnableCodeSnip(filetype, start, end, textSnipHl) abort
+  let ft=toupper(a:filetype)
+  let group='textGroup'.ft
+  if exists('b:current_syntax')
+    let s:current_syntax=b:current_syntax
+    " Remove current syntax definition, as some syntax files (e.g. cpp.vim)
+    " do nothing if b:current_syntax is defined.
+    unlet b:current_syntax
+  endif
+  execute 'syntax include @'.group.' syntax/'.a:filetype.'.vim'
+  try
+    execute 'syntax include @'.group.' after/syntax/'.a:filetype.'.vim'
+  catch
+  endtry
+  if exists('s:current_syntax')
+    let b:current_syntax=s:current_syntax
+  else
+    unlet b:current_syntax
+  endif
+  execute 'syntax region textSnip'.ft.'
+  \ matchgroup='.a:textSnipHl.'
+  \ keepend
+  \ start="'.a:start.'" end="'.a:end.'"
+  \ contains=@'.group
+endfunction
 
+function! EnableMarkdownCodeSnip(filetype) abort
+  call TextEnableCodeSnip(a:filetype, '```'.a:filetype, '```', 'SpecialComment')
+endfunction
 
 " LSP
 "let g:lsp_log_verbose = 1
