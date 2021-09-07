@@ -22,9 +22,11 @@ let g:cpp_simple_highlight = 1
 let g:cpp_attributes_highlight = 1
 
 call plug#begin()
+Plug 'tpope/vim-abolish'
+Plug 'tpope/vim-repeat'
+Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-sensible'
 Plug 'tpope/vim-surround'
-Plug 'tpope/vim-repeat'
 Plug 'preservim/nerdcommenter'
 Plug 'junegunn/fzf', { 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
@@ -107,42 +109,85 @@ autocmd User FloatPreviewWinOpen call FloatPreviewOnTop()
 
 " Neovim-LSP
 lua << EOF
-local nvim_lsp = require 'nvim_lsp'
-nvim_lsp.clangd.setup{
-  cmd = { "clangd", "--background-index", "--compile-commands-dir=build", "-j=8" },
-}
-nvim_lsp.omnisharp.setup{}
-nvim_lsp.pyls.setup{}
-nvim_lsp.rls.setup{}
+local have_lsp, nvim_lsp = pcall(require, 'lspconfig')
+if have_lsp then
+  local on_attach = function(client, bufnr)
+    local function buf_set_keymap(...) vim.api.nvim_buf_set_keymap(bufnr, ...) end
+    local function buf_set_option(...) vim.api.nvim_buf_set_option(bufnr, ...) end
 
--- Custom configs
-local configs = require 'nvim_lsp/configs'
-if not configs.dls then
-  configs.dls = {
-    default_config = {
-      cmd = {'dls'};
-      filetypes = {'d'};
-      root_dir = function(fname)
-        return nvim_lsp.util.find_git_ancestor(fname) or vim.loop.os_homedir()
-      end;
-      settings = {};
-    };
+    buf_set_option('omnifunc', 'v:lua.vim.lsp.omnifunc')
+
+    -- Mappings.
+    local opts = { noremap=true, silent=true }
+    buf_set_keymap('n', 'gD', '<Cmd>lua vim.lsp.buf.declaration()<CR>', opts)
+    buf_set_keymap('n', '<C-]>', '<Cmd>lua vim.lsp.buf.definition()<CR>', opts)
+    buf_set_keymap('n', 'K', '<Cmd>lua vim.lsp.buf.hover()<CR>', opts)
+    buf_set_keymap('n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<CR>', opts)
+    buf_set_keymap('n', '<C-k>', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts)
+    buf_set_keymap('n', '<space>wa', '<cmd>lua vim.lsp.buf.add_workspace_folder()<CR>', opts)
+    buf_set_keymap('n', '<space>wr', '<cmd>lua vim.lsp.buf.remove_workspace_folder()<CR>', opts)
+    buf_set_keymap('n', '<space>wl', '<cmd>lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<CR>', opts)
+    buf_set_keymap('n', '<space>D', '<cmd>lua vim.lsp.buf.type_definition()<CR>', opts)
+    buf_set_keymap('n', '<space>rn', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
+    buf_set_keymap('n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
+    buf_set_keymap('n', '<space>e', '<cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>', opts)
+    buf_set_keymap('n', '[d', '<cmd>lua vim.lsp.diagnostic.goto_prev()<CR>', opts)
+    buf_set_keymap('n', ']d', '<cmd>lua vim.lsp.diagnostic.goto_next()<CR>', opts)
+    buf_set_keymap('n', '<space>q', '<cmd>lua vim.lsp.diagnostic.set_loclist()<CR>', opts)
+    buf_set_keymap('n', 'g0', '<cmd>lua vim.lsp.buf.document_symbol()<CR>', opts)
+
+    -- Set some keybinds conditional on server capabilities
+    if client.resolved_capabilities.document_formatting then
+      buf_set_keymap("n", "<space>f", "<cmd>lua vim.lsp.buf.formatting()<CR>", opts)
+    elseif client.resolved_capabilities.document_range_formatting then
+      buf_set_keymap("n", "<space>f", "<cmd>lua vim.lsp.buf.range_formatting()<CR>", opts)
+    end
+
+    -- Set autocommands conditional on server_capabilities
+    if client.resolved_capabilities.document_highlight then
+      vim.api.nvim_exec([[
+        hi LspReferenceRead  cterm=bold ctermbg=LightYellow ctermfg=Black guibg=LightYellow guifg=Black
+        hi LspReferenceText  cterm=bold ctermbg=LightYellow ctermfg=Black guibg=LightYellow guifg=Black
+        hi LspReferenceWrite cterm=bold ctermbg=LightYellow ctermfg=Black guibg=LightYellow guifg=Black
+        augroup lsp_document_highlight
+          autocmd!
+          autocmd CursorHold <buffer> lua vim.lsp.buf.document_highlight()
+          autocmd CursorMoved <buffer> lua vim.lsp.buf.clear_references()
+        augroup END
+      ]], false)
+    end
+  end
+  nvim_lsp.clangd.setup{
+    cmd = { "clangd", "--background-index", "--compile-commands-dir=build", "-j=8" },
+    on_attach = on_attach,
   }
-end
-nvim_lsp.dls.setup{}
-EOF
-nnoremap <silent> <c-]> <cmd>lua vim.lsp.buf.definition()<CR>
-nnoremap <silent> K     <cmd>lua vim.lsp.buf.hover()<CR>
-nnoremap <silent> gD    <cmd>lua vim.lsp.buf.implementation()<CR>
-nnoremap <silent> <c-k> <cmd>lua vim.lsp.buf.signature_help()<CR>
-nnoremap <silent> 1gD   <cmd>lua vim.lsp.buf.type_definition()<CR>
-nnoremap <silent> gr    <cmd>lua vim.lsp.buf.references()<CR>
-nnoremap <silent> gR    <cmd>lua vim.lsp.buf.rename()<CR>
-nnoremap <silent> g0    <cmd>lua vim.lsp.buf.document_symbol()<CR>
-nnoremap <silent> gW    <cmd>lua vim.lsp.buf.workspace_symbol()<CR>
-nnoremap <silent> gd    <cmd>lua vim.lsp.buf.declaration()<CR>
+  nvim_lsp.cmake.setup{ on_attach = on_attach }
+  nvim_lsp.gdscript.setup{ on_attach = on_attach }
+  nvim_lsp.omnisharp.setup{
+    cmd = { "omnisharp", "--languageserver" , "--hostPID", tostring(vim.fn.getpid()) },
+    on_attach = on_attach,
+  }
+  nvim_lsp.pyright.setup{ on_attach = on_attach }
+  nvim_lsp.rls.setup{ on_attach = on_attach }
+  nvim_lsp.tsserver.setup{ on_attach = on_attach }
 
-autocmd Filetype c,cpp,cs,d,rust setlocal omnifunc=v:lua.vim.lsp.omnifunc
+  -- Custom configs
+  local configs = require 'lspconfig/configs'
+  if not configs.dls then
+    configs.dls = {
+      default_config = {
+        cmd = {'dls'};
+        filetypes = {'d'};
+        root_dir = function(fname)
+          return nvim_lsp.util.find_git_ancestor(fname) or vim.loop.os_homedir()
+        end;
+        settings = {};
+      };
+    }
+  end
+  nvim_lsp.dls.setup{ on_attach = on_attach }
+end
+EOF
 
 autocmd Filetype c,cpp nmap <leader>h :ClangdSwitchSourceHeader<CR>
 
