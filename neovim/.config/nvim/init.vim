@@ -58,8 +58,11 @@ xmap g# "vy?<C-R>v<CR>
 " Don't use Ex mode, use Q for formatting
 map Q gq
 
-" Some terminal remappings
+" Some terminal configs
 tnoremap <M-Esc> <C-\><C-n>
+tnoremap <expr> <C-R> '<C-\><C-N>"'.nr2char(getchar()).'pi'
+au TermOpen * setlocal wrap
+au TermOpen * setlocal statusline=%{b:term_title}
 
 " ALT + {h,j,k,l} for changing windows
 tnoremap <A-h> <C-\><C-N><C-w>h
