@@ -50,6 +50,8 @@ colorscheme onedark
 
 nmap <F8> :Ex<CR>
 nmap <C-F8> :Vex<CR>
+
+" Search mappings
 xmap * "vy/\<<C-R>v\><CR>
 xmap g* "vy/<C-R>v<CR>
 xmap # "vy?\<<C-R>v\><CR>
@@ -88,8 +90,10 @@ imap <c-x><c-j> <plug>(fzf-complete-file-ag)
 imap <c-x><c-l> <plug>(fzf-complete-line)
 nmap <leader>f :Files<CR>
 nmap <leader>d :Tags<CR>
-nmap <leader>r :Rg 
 nmap <leader>b :ls<CR>:b
+nmap <leader>r :Rg 
+nmap <leader>R "vyiw:Rg <C-R>v<CR>
+xmap <leader>R "vy:Rg <C-R>v<CR>
 
 " '@' on visual executes the same macro on each line
 xnoremap @ :<C-u>call ExecuteMacroOverVisualRange()<CR>
