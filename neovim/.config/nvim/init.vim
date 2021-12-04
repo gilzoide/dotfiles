@@ -88,8 +88,8 @@ imap <c-x><c-k> <plug>(fzf-complete-word)
 imap <c-x><c-f> <plug>(fzf-complete-path)
 imap <c-x><c-j> <plug>(fzf-complete-file-ag)
 imap <c-x><c-l> <plug>(fzf-complete-line)
-nmap <leader>f :Files<CR>
-nmap <leader>g :GFiles<CR>
+nmap <leader>f :GFiles<CR>
+nmap <leader>F :Files<CR>
 nmap <leader>d :Tags<CR>
 nmap <leader>b :ls<CR>:b
 nmap <leader>r :Rg 
