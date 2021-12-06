@@ -43,9 +43,9 @@ Plug 'prabirshrestha/async.vim'
 Plug 'sheerun/vim-polyglot'
 Plug 'bfrg/vim-cpp-modern'
 Plug 'neovim/nvim-lspconfig'
-"Plug 'prabirshrestha/vim-lsp'
-"Plug 'mattn/vim-lsp-settings'
+Plug 'sbdchd/neoformat'
 call plug#end()
+
 colorscheme onedark
 
 nmap <F8> :Ex<CR>
@@ -225,3 +225,4 @@ function! EnableMarkdownCodeSnip(filetype) abort
   call TextEnableCodeSnip(a:filetype, '```'.a:filetype, '```', 'SpecialComment')
 endfunction
 
+let g:neoformat_run_all_formatters = 1
