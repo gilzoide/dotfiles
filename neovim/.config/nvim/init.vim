@@ -21,6 +21,8 @@ let g:cpp_member_highlight = 1
 let g:cpp_simple_highlight = 1
 let g:cpp_attributes_highlight = 1
 
+let g:indent_guides_guide_size = 1
+
 call plug#begin()
 Plug 'tpope/vim-abolish'
 Plug 'tpope/vim-repeat'
@@ -37,6 +39,7 @@ Plug 'igankevich/mesonic'
 Plug 'vim-scripts/argtextobj.vim'
 Plug 'vim-scripts/loremipsum'
 Plug 'michaeljsmith/vim-indent-object'
+Plug 'nathanaelkane/vim-indent-guides'
 Plug 'ncm2/float-preview.nvim'
 Plug 'joshdick/onedark.vim'
 Plug 'prabirshrestha/async.vim'
