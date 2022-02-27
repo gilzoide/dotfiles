@@ -30,8 +30,8 @@ Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-sensible'
 Plug 'tpope/vim-surround'
 Plug 'preservim/nerdcommenter'
-Plug 'junegunn/fzf', { 'do': './install --all' }
-Plug 'junegunn/fzf.vim'
+Plug 'nvim-lua/plenary.nvim'
+Plug 'nvim-telescope/telescope.nvim'
 Plug 'editorconfig/editorconfig-vim'
 Plug 'Olical/vim-enmasse'
 Plug 'frazrepo/vim-rainbow'
@@ -40,7 +40,6 @@ Plug 'vim-scripts/argtextobj.vim'
 Plug 'vim-scripts/loremipsum'
 Plug 'michaeljsmith/vim-indent-object'
 Plug 'nathanaelkane/vim-indent-guides'
-Plug 'ncm2/float-preview.nvim'
 Plug 'joshdick/onedark.vim'
 Plug 'prabirshrestha/async.vim'
 Plug 'sheerun/vim-polyglot'
@@ -83,21 +82,20 @@ nnoremap <A-j> <C-w>j
 nnoremap <A-k> <C-w>k
 nnoremap <A-l> <C-w>l
 
-" FZF
-nmap <leader><tab> <plug>(fzf-maps-n)
-xmap <leader><tab> <plug>(fzf-maps-x)
-omap <leader><tab> <plug>(fzf-maps-o)
-imap <c-x><c-k> <plug>(fzf-complete-word)
-imap <c-x><c-f> <plug>(fzf-complete-path)
-imap <c-x><c-j> <plug>(fzf-complete-file-ag)
-imap <c-x><c-l> <plug>(fzf-complete-line)
-nmap <leader>f :GFiles<CR>
-nmap <leader>F :Files<CR>
-nmap <leader>d :Tags<CR>
+" Find mappings
 nmap <leader>b :ls<CR>:b
-nmap <leader>r :Rg 
-nmap <leader>R "vyiw:Rg <C-R>v<CR>
-xmap <leader>R "vy:Rg <C-R>v<CR>
+
+nnoremap <leader>ff <cmd>Telescope find_files<CR>
+nnoremap <leader>fg <cmd>Telescope git_files<CR>
+nnoremap <leader>fb <cmd>Telescope buffers<cr>
+nnoremap <leader>fr <cmd>Telescope lsp_references<CR>
+nnoremap <leader>fi <cmd>Telescope lsp_implementations<CR>
+nnoremap <leader>rg <cmd>Telescope live_grep<CR>
+nnoremap <leader>R <cmd>Telescope grep_string<CR>
+nnoremap <leader>gd <cmd>Telescope lsp_definitions<CR>
+nnoremap <leader>rn <cmd>lua vim.lsp.buf.rename()<CR>
+nnoremap <leader>dd <cmd>Telescope diagnostics<CR>
+nnoremap <leader>ca <cmd>Telescope lsp_code_actions<CR>
 
 " '@' on visual executes the same macro on each line
 xnoremap @ :<C-u>call ExecuteMacroOverVisualRange()<CR>
@@ -105,12 +103,6 @@ function! ExecuteMacroOverVisualRange()
   echo "@".getcmdline()
   execute ":'<,'>normal @".nr2char(getchar())
 endfunction
-
-" Preview float window
-function! FloatPreviewOnTop()
-  call nvim_win_set_config(g:float_preview#win, {'relative': 'editor', 'row': 0, 'col': 0})
-endfunction
-autocmd User FloatPreviewWinOpen call FloatPreviewOnTop()
 
 " Neovim-LSP
 lua << EOF
@@ -176,22 +168,6 @@ if have_lsp then
   nvim_lsp.pyright.setup{ on_attach = on_attach }
   nvim_lsp.rls.setup{ on_attach = on_attach }
   nvim_lsp.tsserver.setup{ on_attach = on_attach }
-
-  -- Custom configs
-  local configs = require 'lspconfig/configs'
-  if not configs.dls then
-    configs.dls = {
-      default_config = {
-        cmd = {'dls'};
-        filetypes = {'d'};
-        root_dir = function(fname)
-          return nvim_lsp.util.find_git_ancestor(fname) or vim.loop.os_homedir()
-        end;
-        settings = {};
-      };
-    }
-  end
-  nvim_lsp.dls.setup{ on_attach = on_attach }
 end
 EOF
 
