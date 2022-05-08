@@ -88,14 +88,9 @@ nmap <leader>b :ls<CR>:b
 nnoremap <leader>ff <cmd>Telescope find_files<CR>
 nnoremap <leader>fg <cmd>Telescope git_files<CR>
 nnoremap <leader>fb <cmd>Telescope buffers<cr>
-nnoremap <leader>fr <cmd>Telescope lsp_references<CR>
-nnoremap <leader>fi <cmd>Telescope lsp_implementations<CR>
 nnoremap <leader>rg <cmd>Telescope live_grep<CR>
 nnoremap <leader>R <cmd>Telescope grep_string<CR>
-nnoremap <leader>gd <cmd>Telescope lsp_definitions<CR>
-nnoremap <leader>rn <cmd>lua vim.lsp.buf.rename()<CR>
 nnoremap <leader>dd <cmd>Telescope diagnostics<CR>
-nnoremap <leader>ca <cmd>Telescope lsp_code_actions<CR>
 
 " '@' on visual executes the same macro on each line
 xnoremap @ :<C-u>call ExecuteMacroOverVisualRange()<CR>
@@ -114,34 +109,43 @@ if have_lsp then
 
     buf_set_option('omnifunc', 'v:lua.vim.lsp.omnifunc')
 
-    -- Mappings.
-    local opts = { noremap=true, silent=true }
-    buf_set_keymap('n', 'gD', '<Cmd>lua vim.lsp.buf.declaration()<CR>', opts)
-    buf_set_keymap('n', '<C-]>', '<Cmd>lua vim.lsp.buf.definition()<CR>', opts)
+    -- Misc keymaps
+    local opts = { noremap = true, silent = true }
     buf_set_keymap('n', 'K', '<Cmd>lua vim.lsp.buf.hover()<CR>', opts)
-    buf_set_keymap('n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<CR>', opts)
+    buf_set_keymap('n', '<C-]>', '<cmd>Telescope lsp_definitions<CR>', opts)
     buf_set_keymap('n', '<C-k>', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts)
-    buf_set_keymap('n', '<space>wa', '<cmd>lua vim.lsp.buf.add_workspace_folder()<CR>', opts)
-    buf_set_keymap('n', '<space>wr', '<cmd>lua vim.lsp.buf.remove_workspace_folder()<CR>', opts)
-    buf_set_keymap('n', '<space>wl', '<cmd>lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<CR>', opts)
-    buf_set_keymap('n', '<space>D', '<cmd>lua vim.lsp.buf.type_definition()<CR>', opts)
-    buf_set_keymap('n', '<space>rn', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
-    buf_set_keymap('n', '<space>ca', '<cmd>lua vim.lsp.buf.code_action()<CR>', opts)
+    buf_set_keymap('i', '<C-k>', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts)
+    -- Find/list keymaps
     buf_set_keymap('n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
-    buf_set_keymap('n', '<space>e', '<cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>', opts)
-    buf_set_keymap('n', '[d', '<cmd>lua vim.lsp.diagnostic.goto_prev()<CR>', opts)
-    buf_set_keymap('n', ']d', '<cmd>lua vim.lsp.diagnostic.goto_next()<CR>', opts)
-    buf_set_keymap('n', '<space>q', '<cmd>lua vim.lsp.diagnostic.set_loclist()<CR>', opts)
+    buf_set_keymap('n', '<leader>fr', '<cmd>Telescope lsp_references<CR>', opts)
+    buf_set_keymap('n', '<leader>fd', '<cmd>Telescope lsp_definitions<CR>', opts)
+    buf_set_keymap('n', '<leader>fD', '<cmd>Telescope lsp_type_definitions<CR>', opts)
+    buf_set_keymap('n', '<leader>fi', '<cmd>Telescope lsp_implementations<CR>', opts)
     buf_set_keymap('n', 'g0', '<cmd>lua vim.lsp.buf.document_symbol()<CR>', opts)
+    buf_set_keymap('n', '<leader>ds', '<cmd>Telescope lsp_document_symbols<CR>', opts)
+    buf_set_keymap('n', '<leader>ws', '<cmd>Telescope lsp_workspace_symbols<CR>', opts)
+    -- Code action keymaps
+    buf_set_keymap('n', '<leader>rn', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
+    buf_set_keymap('n', '<leader>ca', '<cmd>lua vim.lsp.buf.code_action()<CR>', opts)
+    -- Diagnostics keymaps
+    buf_set_keymap('n', '[d', '<cmd>lua vim.diagnostic.goto_prev()<CR>', opts)
+    buf_set_keymap('n', ']d', '<cmd>lua vim.diagnostic.goto_next()<CR>', opts)
 
-    -- Set some keybinds conditional on server capabilities
+    -- Codelens
+    vim.api.nvim_exec([[
+    autocmd BufEnter,CursorHold,InsertLeave <buffer> lua vim.lsp.codelens.refresh()
+
+    hi LspCodeLens cterm=bold ctermbg=None ctermfg=Cyan guibg=None guifg=Cyan
+    ]], false)
+
+    -- Format keymap
     if client.resolved_capabilities.document_formatting then
       buf_set_keymap("n", "<space>f", "<cmd>lua vim.lsp.buf.formatting()<CR>", opts)
     elseif client.resolved_capabilities.document_range_formatting then
       buf_set_keymap("n", "<space>f", "<cmd>lua vim.lsp.buf.range_formatting()<CR>", opts)
     end
 
-    -- Set autocommands conditional on server_capabilities
+    -- Document highlight autocommand
     if client.resolved_capabilities.document_highlight then
       vim.api.nvim_exec([[
         hi LspReferenceRead  cterm=bold ctermbg=LightYellow ctermfg=Black guibg=LightYellow guifg=Black
