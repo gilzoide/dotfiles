@@ -1,1 +1,8 @@
 .DS_Store
+
+# Visual Studio and Visual Studio Code files
+.vs/
+.vscode/
+
+# direnv files (Ref: https://direnv.net/)
+.envrc
