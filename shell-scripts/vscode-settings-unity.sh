@@ -19,4 +19,4 @@ sed_script='
   /\*\./d
 }
 '
-sed -i .bkp -E -e "$sed_script" "$file"
+sed -i '' -E -e "$sed_script" "$file"
