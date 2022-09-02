@@ -10,6 +10,10 @@ if [[ -z "$1" ]]; then
   echo "$script_usage"
   exit 1
 fi
+if [[ ! -f "$1" ]]; then
+  echo "No such file: '$1'"
+  exit 1
+fi
 file_path="$1"
 shift
 
@@ -24,4 +28,8 @@ else
 fi
 
 guid=$(cat "$file_path" | grep guid: | cut -w -f2)
+if [[ -z "$guid" ]]; then
+  echo "Couldn't find GUID for file '$file_path'"
+  exit 1
+fi
 rg "$guid" --glob "!$file_path" $rg_args
