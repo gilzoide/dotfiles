@@ -6,3 +6,6 @@
 
 # direnv files (Ref: https://direnv.net/)
 .envrc
+
+# Unity Recorder default recordings directory
+/Recordings/
