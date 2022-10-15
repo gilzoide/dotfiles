@@ -7,4 +7,4 @@ if [[ -z "$1" ]]; then
     exit 1
 fi
 
-rg --glob '*.meta' -l $1
+rg --no-ignore --glob '*.meta' -l $1
