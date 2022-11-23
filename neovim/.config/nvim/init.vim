@@ -1,4 +1,5 @@
 set mouse=a
+set mousemodel=extend
 set number
 set relativenumber
 set hidden
@@ -11,6 +12,8 @@ set completeopt=menu
 set expandtab
 set tabstop=2
 set shiftwidth=2
+
+set cc=101
 
 let g:netrw_liststyle = 3
 let g:netrw_banner = 0
@@ -36,6 +39,7 @@ Plug 'editorconfig/editorconfig-vim'
 Plug 'Olical/vim-enmasse'
 Plug 'frazrepo/vim-rainbow'
 Plug 'igankevich/mesonic'
+Plug 'Glench/Vim-Jinja2-Syntax'
 Plug 'vim-scripts/argtextobj.vim'
 Plug 'vim-scripts/loremipsum'
 Plug 'michaeljsmith/vim-indent-object'
@@ -46,21 +50,29 @@ Plug 'sheerun/vim-polyglot'
 Plug 'bfrg/vim-cpp-modern'
 Plug 'neovim/nvim-lspconfig'
 Plug 'sbdchd/neoformat'
+Plug 'itchyny/lightline.vim'
+Plug 'preservim/nerdtree'
 call plug#end()
 
 colorscheme onedark
 
-nmap <F8> :Ex<CR>
-nmap <C-F8> :Vex<CR>
+""" lightline options
+set noshowmode
+let g:lightline = { 'colorscheme': 'one' }
+
+""" NERDTree options
+" Start NERDTree when Vim is started without file arguments.
+autocmd StdinReadPre * let s:std_in=1
+autocmd VimEnter * if argc() == 0 && !exists('s:std_in') | NERDTree | endif
+" Mirror the NERDTree before showing it. This makes it the same on all tabs.
+nnoremap <F8> :NERDTreeMirror<CR>:NERDTreeToggle<CR>
+nnoremap <C-F8> :NERDTreeMirror<CR>:NERDTreeToggleVCS<CR>
 
 " Search mappings
 xmap * "vy/\<<C-R>v\><CR>
 xmap g* "vy/<C-R>v<CR>
 xmap # "vy?\<<C-R>v\><CR>
 xmap g# "vy?<C-R>v<CR>
-
-" Don't use Ex mode, use Q for formatting
-map Q gq
 
 " Some terminal configs
 tnoremap <M-Esc> <C-\><C-n>
