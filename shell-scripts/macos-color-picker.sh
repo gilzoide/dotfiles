@@ -13,4 +13,6 @@ red=$(echo "$red_raw / 256" | bc)
 green=$(echo "$green_raw / 256" | bc)
 blue=$(echo "$blue_raw / 256" | bc)
 
-printf '%02x%02x%02x' "$red" "$green" "$blue" | pbcopy
+html_color=$(printf '%02x%02x%02x' "$red" "$green" "$blue")
+echo "$html_color"
+printf "%s" "$html_color" | pbcopy
