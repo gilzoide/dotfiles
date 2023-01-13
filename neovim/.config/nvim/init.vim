@@ -151,14 +151,14 @@ if have_lsp then
     ]], false)
 
     -- Format keymap
-    if client.resolved_capabilities.document_formatting then
+    if client.server_capabilities.documentFormattingProvider then
       buf_set_keymap("n", "<space>f", "<cmd>lua vim.lsp.buf.formatting()<CR>", opts)
-    elseif client.resolved_capabilities.document_range_formatting then
+    elseif client.server_capabilities.documentRangeFormattingProvider then
       buf_set_keymap("n", "<space>f", "<cmd>lua vim.lsp.buf.range_formatting()<CR>", opts)
     end
 
     -- Document highlight autocommand
-    if client.resolved_capabilities.document_highlight then
+    if client.server_capabilities.documentHighlightProvider then
       vim.api.nvim_exec([[
         hi LspReferenceRead  cterm=bold ctermbg=LightYellow ctermfg=Black guibg=LightYellow guifg=Black
         hi LspReferenceText  cterm=bold ctermbg=LightYellow ctermfg=Black guibg=LightYellow guifg=Black
