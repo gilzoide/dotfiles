@@ -220,4 +220,9 @@ function! EnableMarkdownCodeSnip(filetype) abort
   call TextEnableCodeSnip(a:filetype, '```'.a:filetype, '```', 'SpecialComment')
 endfunction
 
+function! HighlightNonAscii() abort
+  let @/ = '[^\x00-\x7F]'
+  :normal! n
+endfunction
+
 let g:neoformat_run_all_formatters = 1
