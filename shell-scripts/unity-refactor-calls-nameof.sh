@@ -6,7 +6,7 @@
 # If no file names are passed, uses `rg` to search for all **.cs scripts that need update
 
 target_methods='StartCoroutine|StopCoroutine|CancelInvoke|Invoke|InvokeRepeating|IsInvoking'
-spaces_re='[ \\t\\n]*'
+spaces_re="[	 ]*"
 search_re="^$spaces_re($target_methods)$spaces_re\($spaces_re\""
 
 if [[ $# -eq 0 ]]; then
