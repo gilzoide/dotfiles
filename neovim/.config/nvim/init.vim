@@ -144,11 +144,13 @@ if have_lsp then
     buf_set_keymap('n', ']d', '<cmd>lua vim.diagnostic.goto_next()<CR>', opts)
 
     -- Codelens
-    vim.api.nvim_exec([[
-    autocmd BufEnter,CursorHold,InsertLeave <buffer> lua vim.lsp.codelens.refresh()
+    if client.server_capabilities.codeLens then
+      vim.api.nvim_exec([[
+      autocmd BufEnter,CursorHold,InsertLeave <buffer> lua vim.lsp.codelens.refresh()
 
-    hi LspCodeLens cterm=bold ctermbg=None ctermfg=Cyan guibg=None guifg=Cyan
-    ]], false)
+      hi LspCodeLens cterm=bold ctermbg=None ctermfg=Cyan guibg=None guifg=Cyan
+      ]], false)
+    end
 
     -- Format keymap
     if client.server_capabilities.documentFormattingProvider then
