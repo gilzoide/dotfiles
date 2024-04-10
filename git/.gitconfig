@@ -17,3 +17,5 @@
 	detachedHead = false
 [init]
 	defaultBranch = main
+[lfs "remote"]
+	autodetect = true
