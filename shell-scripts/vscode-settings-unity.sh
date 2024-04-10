@@ -11,7 +11,7 @@ sed_script='
 
 ## Delete some file exclusions:
 # Useful folders
-/[Bb]uild|[Ll]ibrary|[Pp]rojectSettings/d
+/[Bb]uild|[Ll]ibrary|[Pp]rojectSettings|[Uu]serSettings/d
 # Git stuff
 /gitignore|gitmodules/d
 # Any other project files, but .meta
