@@ -9,3 +9,10 @@
 
 # Unity Recorder default recordings directory
 /Recordings/
+# Unity + Mono crash logs
+mono_crash.*.json
+.mono/
+
+# Python virtual environments
+.venv/
+venv/
