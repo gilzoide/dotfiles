@@ -189,7 +189,7 @@ if have_lsp then
 end
 EOF
 
-autocmd Filetype c,cpp nmap <leader>h :ClangdSwitchSourceHeader<CR>
+autocmd Filetype c,cpp,m,mm nmap <leader>h :ClangdSwitchSourceHeader<CR>
 
 " Ref: https://vim.fandom.com/wiki/Different_syntax_highlighting_within_regions_of_a_file
 function! TextEnableCodeSnip(filetype, start, end, textSnipHl) abort
