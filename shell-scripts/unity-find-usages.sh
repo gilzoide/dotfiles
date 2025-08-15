@@ -27,7 +27,7 @@ else
   rg_args=$@
 fi
 
-guid=$(cat "$file_path" | grep guid: | dos2unix | cut -w -f2)
+guid=$(cat "$file_path" | grep -m 1 guid: | cut -w -f2)
 if [[ -z "$guid" ]]; then
   echo "Couldn't find GUID for file '$file_path'"
   exit 1
