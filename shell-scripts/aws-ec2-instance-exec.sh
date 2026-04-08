@@ -7,8 +7,13 @@ if [[ -z "$NAME_PATTERN" ]] || [[ -z "$COMMAND" ]]; then
   exit 1
 fi
 
-
-instance_ids=$(aws-list-ec2-instance-ids.sh "$NAME_PATTERN")
+instance_ids=$(
+  aws ec2 describe-instances \
+    --filters "Name=tag:Name,Values=$NAME_PATTERN" \
+    --query "Reservations[*].Instances[*].{InstanceId:InstanceId}" \
+    --output json \
+  | jq '.[].[].InstanceId' -r
+)
 instance_ids_spaced=$(echo "$instance_ids" | tr '\n' ' ')
 echo "Instance IDs: $instance_ids_spaced"
 
